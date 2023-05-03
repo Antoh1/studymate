@@ -7,7 +7,7 @@
 <hr>
 <div>
 {% for room in rooms %}
-    <div>{{ room.id }} -- {{ room.name }} </div><br/>
+    <div>{{ room.id }} -- <a href="{% url 'study-room' room.id %}">{{ room.name }}</a> </div><br/>
 {% endfor %}
 </div>
 {% endblock content %}
