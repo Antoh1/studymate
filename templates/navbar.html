@@ -1,3 +1,6 @@
-<a href="#">
-    <h1><a href=" ">LOGO</a></h1>
-</a>
+<div>
+    <h1><a href="{% url 'study-home' %}">LOGO</a></h1>
+    <form method="" action="{% url 'study-home' %}">
+        <input type="text" name="q" placeholder="Search Rooms..."/>
+    </form>
+</div>

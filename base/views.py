@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from .models import Room, Message
+from .models import Room, Message, Topic
 from .forms import RoomForm
+from django.db.models import Q
 
 # rooms = [
 #     {'id':1, 'name':'The art of python'},
@@ -9,8 +10,11 @@ from .forms import RoomForm
 # ]
 
 def home(request):
-    rooms = Room.objects.all()
-    context = {'rooms':rooms}
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    rooms = Room.objects.filter(Q(topic__name__icontains=q) | Q(host__username__icontains=q) | Q(name__icontains=q))
+    topics = Topic.objects.all()
+    rooms_count = rooms.count()
+    context = {'rooms':rooms, 'topics':topics, 'rooms_count':rooms_count}
     return render(request, 'base/index.html', context)
 
 def room(request, pk):

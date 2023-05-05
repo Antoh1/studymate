@@ -2,21 +2,43 @@
 {% extends 'main.html' %}
 
 {% block content %}
+
+<style>
+    .home_sidebar {
+        display: grid;
+        grid-template-columns: 1fr 3fr;        
+    }
+</style>
+
 <hr>
 <h1 align="center">The Home Page</h1>
-<div><a href="{% url 'room-form' %}">Create Room</a></div>
-<hr>
 
-<div>
-<div>
-{% for room in rooms %}
-    <a href="{% url 'update-form' room.id %}">Edit</a>
-    <a href="{% url 'delete-form' room.id %}">Delete</a>
-    <span>@{{ room.host.username }}</span>
-    <div>{{ room.id }} -- <a href="{% url 'study-room' room.id %}">{{ room.name }}</a> </div>
-    <span><i>{{ room.topic.name }}</i></span>
-    <hr>
-{% endfor %}
-</div>
+<hr>
+<div class="home_sidebar">
+    <div>
+        <h3>Browse Topics</h3>
+        <hr>
+        <div>
+            <a href="{% url 'study-home' %}">All</a><br/>
+        </div>
+        {% for topic in topics %}
+        <div>
+            <a href="{% url 'study-home' %}?q={{topic.name}}">{{topic.name}}</a><br/>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div>
+        <div><a href="{% url 'room-form' %}">Create Room</a></div>
+        <span>{{ rooms_count }} room(s) available</span><br/><br/>
+        {% for room in rooms %}
+        <a href="{% url 'update-form' room.id %}">Edit</a>
+        <a href="{% url 'delete-form' room.id %}">Delete</a>
+        <span>@{{ room.host.username }}</span>
+        <div>{{ room.id }} -- <a href="{% url 'study-room' room.id %}">{{ room.name }}</a> </div>
+        <span><i>{{ room.topic.name }}</i></span>
+        <hr>
+        {% endfor %}
+    </div>
 </div>
 {% endblock content %}
