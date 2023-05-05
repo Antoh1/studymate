@@ -4,13 +4,19 @@
 {% block content %}
 <hr>
 <h1 align="center">The Home Page</h1>
+<div><a href="{% url 'room-form' %}">Create Room</a></div>
 <hr>
+
+<div>
 <div>
 {% for room in rooms %}
+    <a href="{% url 'update-form' room.id %}">Edit</a>
+    <a href="{% url 'delete-form' room.id %}">Delete</a>
     <span>@{{ room.host.username }}</span>
     <div>{{ room.id }} -- <a href="{% url 'study-room' room.id %}">{{ room.name }}</a> </div>
     <span><i>{{ room.topic.name }}</i></span>
     <hr>
 {% endfor %}
+</div>
 </div>
 {% endblock content %}
