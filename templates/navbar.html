@@ -3,4 +3,10 @@
     <form method="" action="{% url 'study-home' %}">
         <input type="text" name="q" placeholder="Search Rooms..."/>
     </form>
+    {% if request.user.is_authenticated %}
+    <p>Hello {{ request.user }}</p>
+    <a href="{% url 'logout-user' %}">Logout</a>
+    {% else %}
+    <a href="{% url 'study-login' %}">Login</a>
+    {% endif %}
 </div>
