@@ -61,15 +61,26 @@ def home(request):
     rooms = Room.objects.filter(Q(topic__name__icontains=q) | Q(host__username__icontains=q) | Q(name__icontains=q))
     topics = Topic.objects.all()
     room_count = rooms.count()
-    context = {'rooms':rooms, 'topics':topics, 'room_count':room_count}
+    room_messages = Message.objects.filter(Q(room__topic__name__icontains=q))
+    context = {'rooms':rooms, 'topics':topics, 'room_count':room_count, 'room_messages':room_messages}
     return render(request, 'base/index.html', context)
 
 def room(request, pk):
     room = Room.objects.get(id=pk)
+    room_messages = room.message_set.all().order_by('-created') #Many2one rel
+    participants = room.participants.all() #Many2Many rel
+    if request.method == 'POST':
+        message = Message.objects.create(
+            user = request.user,
+            room = room,
+            body = request.POST.get('body')
+        )
+        room.participants.add(request.user)
+        return redirect('study-room', pk=room.id)
     # for rm in rooms:
     #     if rm['id'] == int(pk):
     #         room = rm
-    context = {'room': room}
+    context = {'room': room, 'room_messages': room_messages, 'participants': participants}
     return render(request, 'base/room.html', context)
 
 @login_required(login_url='study-login')
@@ -109,3 +120,15 @@ def delete_room(request, pk):
         return redirect('study-home')
     
     return render(request, 'base/delete.html', {'obj': room})  
+
+
+@login_required(login_url='study-login')
+def delete_comment(request, pk):
+    comment = Message.objects.get(id=pk)
+    if request.user != comment.user:
+        return HttpResponse("This action is restricted")
+    if request.method == "POST":
+        comment.delete()
+        return redirect('study-home')
+    
+    return render(request, 'base/delete.html', {'obj': comment})  
